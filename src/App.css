@@ -1,0 +1,20 @@
+header > *,
+main > *,
+footer > *{
+  padding:  0px 10%;
+}
+
+header{
+  background-color: #15616D;
+}
+
+.div-up{
+  padding-top: 1rem;
+  display: flex;
+  justify-content:space-between;
+}
+
+.div-user-login{
+  display: flex;
+  gap: 3rem;
+}
