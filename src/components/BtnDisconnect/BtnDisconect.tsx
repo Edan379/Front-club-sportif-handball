@@ -1,6 +1,4 @@
-import { useNavigate } from 'react-router-dom';
 import { disconectedUser } from '../../services/api/disconectedUser';
-//import { dataUser } from '../../services/interfaces/dataUser';
 
 interface BtnDisconectProps {
   statut: string;
@@ -9,37 +7,23 @@ interface BtnDisconectProps {
 }
 
 export function BtnDisconect(props: BtnDisconectProps) {
-  const { statut, /* redifineUserRole, */ redifineIsAuthenticated } = props;
+  const { statut } = props;
 
-  const navigate = useNavigate();
 
   async function handleDisconect() {
-    // to recover in localstorage token user
-    const userToken = localStorage.getItem("token");
+    //request
+    const response = await disconectedUser();
+    if (response === 201) {
+      //remove token and refreshToken in localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
 
-    if (userToken) {
-      let token = JSON.parse(userToken);
-      //console.log("userToken: ",token);
-
-      //request
-      const response = await disconectedUser(token);
-      if (response != undefined) {
-        //redifineUserRole("visteur");
-        redifineIsAuthenticated(false);
-
-        //remove token inlocalStorage
-        localStorage.removeItem("token");
-
-        //rediction to homepage
-        navigate("/");
-
-        // reload page
-        location.reload();
-      }
-      else {
-        //show error modale
-        console.log("La déconnexion s'est mal passée")
-      }
+      // reload page
+      location.reload();
+    }
+    else {
+      //show error modale
+      console.log("La déconnexion s'est mal passée")
     }
   }
 
