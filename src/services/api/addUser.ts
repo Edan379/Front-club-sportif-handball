@@ -1,12 +1,10 @@
-//import { useApi } from "../hooks/useApi";
-import { users } from "../../components/modales/LoginModal/faker";
-//import UserInterface from "../interfaces/UserInterface";
+import { useApi } from "../hooks/useApi";
+import { dataUser } from "../interfaces/dataUser";
+import { ISignupForm } from "../interfaces/SignupForm";
 
-//const api = useApi();
+const api = useApi();
 
-export async function addUser(newUser:any ): Promise<any> {
-    console.log('New user added: ', newUser);
-    users.push(newUser);
-    //const addUser = await api.post(``, newUser);
-    //return addUser;
+export async function addUser(newUser: Partial<ISignupForm>): Promise<{user:Partial<dataUser>,token:string,refreshToken:string}> {
+  const { data } = await api.post(`auth/signup`, newUser);
+  return  data;
 }

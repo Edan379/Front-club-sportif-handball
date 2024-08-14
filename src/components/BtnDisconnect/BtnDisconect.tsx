@@ -2,13 +2,10 @@ import { disconectedUser } from '../../services/api/disconectedUser';
 
 interface BtnDisconectProps {
   statut: string;
-  //redifineUserRole: (role: string) => void;
-  redifineIsAuthenticated: (boolean: boolean) => void;
 }
 
 export function BtnDisconect(props: BtnDisconectProps) {
   const { statut } = props;
-
 
   async function handleDisconect() {
     //request
