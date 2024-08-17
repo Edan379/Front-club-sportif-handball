@@ -5,22 +5,31 @@ import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteNews } from "../../../services/api/News";
 
-export function DeleteNewsModal(props:any) {
-  const {news_id, deleteArt}= props;
+interface IDeleteNewsModal {
+  news_id: string,
+  deleteArt: (news_id: string) => void;
+}
+
+export function DeleteNewsModal(props: IDeleteNewsModal) {
+  const { news_id, deleteArt } = props;
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleBtnOk = async () => {
-    //request api to delete news
-    const response = await deleteNews(news_id);
-    console.log("response: ",response);
-    
-    if (response.data === 204){
-      //close modal
-      setOpenModal(false);
-  
-      //delete art
-      deleteArt(news_id);
+    try {
+      //request api to delete news
+      const { data } = await deleteNews(+news_id);
+
+      if (data === 204) {
+        //close modal
+        setOpenModal(false);
+
+        //delete art
+        deleteArt(news_id);
+      }
+
+    } catch (error) {
+      console.log("error: ", error);
     }
   }
 
