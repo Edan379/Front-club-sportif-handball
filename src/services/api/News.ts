@@ -19,9 +19,6 @@ export async function getNewsList(): Promise<NewData[] | any> {
 }
 
 export async function createNews(art: any) {
-  /* console.log('data', art);
-  const newNewsList = [...listNews, art];
-  return newNewsList; */
   const { data } = await api.post("news/create", art);
   return data;
 }

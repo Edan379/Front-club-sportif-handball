@@ -9,7 +9,7 @@ export function DashboardPage() {
         <NewsTab/>
       </Tabs.Item>
       <Tabs.Item title="Gérer les évènements">
-        {<EventsTab />}
+        <EventsTab />
       </Tabs.Item>
       <Tabs.Item title="Gérer les utilisateurs">
         Contenu utilisateurs
