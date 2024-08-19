@@ -5,18 +5,18 @@ import { createNews } from "../../../services/api/News";
 import { SuccessModal } from "../SuccessModal/SuccessModal";
 
 interface ModalCreateNewsProps {
-  addArtInNewsList:(newArt:any)=>void
+  addArtInNewsList: (newArt: any) => void
 }
 
 export function ModalCreateNews(props: ModalCreateNewsProps) {
   const { addArtInNewsList } = props;
-  
+
   const [formShow, setFormShow] = useState("hidden");
-  
+
   const handleFormShow = () => {
     setFormShow("flex");
   }
-  
+
   const handleFormHidden = () => {
     setFormShow("hidden");
   }
@@ -43,35 +43,38 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
 
     //submit if form is validate by validationSchema of yup
     onSubmit: async values => {
-      //console.log("les données sont validées, les voici:", values);
+      try {
+        //do request to server
+        const artCreated = await createNews(values);
 
-      //do request to server
-      const artCreated = await createNews(values);
+        //console.log('artCreated: ', artCreated);
 
-      //console.log('artCreated: ', artCreated);
-      
-      setForm(values);
+        setForm(values);
 
-      //if artCreated ok
-      //close modal
-      handleFormHidden();
+        //if artCreated ok
+        //close modal
+        handleFormHidden();
 
-      //show modal to confirm success
-      const successModal = document.getElementById("popup-modal");
-      if (successModal) {
-        successModal.style.display = "block";
-        successModal.addEventListener("click", () => {
-          successModal.style.display = 'none';
-        })
+        //show modal to confirm success
+        const successModal = document.getElementById("popup-modal");
+        if (successModal) {
+          successModal.style.display = "block";
+          successModal.addEventListener("click", () => {
+            successModal.style.display = 'none';
+          })
+        }
+        addArtInNewsList(artCreated);
+        resetForm();
+
+        //else rsponse not ok
+        /*show modal to indicate failure
+          resetForm();
+          handleFormShow()
+        */
+      } catch (error) {
+        console.log(error);
       }
-      addArtInNewsList(artCreated);
-      resetForm();
-      
-      //else rsponse not ok
-/*    show modal to indicate failure
-      resetForm();
-      handleFormShow()
- */ },
+    },
   });
 
 
@@ -82,7 +85,7 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
       </button>
 
       <SuccessModal />
-      
+
       <div id="crud-modal" tab-index="-1" aria-hidden="true" className={formShow + " overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"}>
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
