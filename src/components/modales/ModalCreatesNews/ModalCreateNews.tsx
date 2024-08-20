@@ -47,11 +47,8 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
         //do request to server
         const artCreated = await createNews(values);
 
-        //console.log('artCreated: ', artCreated);
-
         setForm(values);
 
-        //if artCreated ok
         //close modal
         handleFormHidden();
 

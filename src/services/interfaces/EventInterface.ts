@@ -1,6 +1,6 @@
 export default interface IEventInterface {
   id: number,
-  img?: File | string,
+  img?: File | string ,
   title: string,
   content: string,
   type: string,

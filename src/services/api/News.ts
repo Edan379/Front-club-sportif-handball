@@ -1,7 +1,5 @@
 import { useApi } from "../hooks/useApi";
 import { NewData } from "../interfaces/NewData";
-//faker
-//import { listNews } from "../../pages/News/faker";
 
 // Use Pick to create type with proprietie will
 type PartialNewData = Pick<NewData, 'id' | 'img' | 'title' | 'content'>;
@@ -10,11 +8,8 @@ type PartialNewData = Pick<NewData, 'id' | 'img' | 'title' | 'content'>;
 const api = useApi();
 
 //request server
-export async function getNewsList(): Promise<NewData[] | any> {
-  /* const data = listNews;
-  return data */
+export async function getNewsList(): Promise<NewData[]> {
   const { data } = await api.get(`news/list`);
-  //console.log("réponse du serveur:", data)
   return data
 }
 
@@ -37,10 +32,5 @@ export async function modifyNews(data: PartialNewData) {
 
 export async function getNewDetail(idNew: string) {
   const response = await api.get(`news/id/${idNew}`);
-  console.log("response serveur: ", response);
   return response;
-
-  //use faker
-  /* const itemFound = listNews.find((item) => item.id === idNew)
-  return itemFound; */
 }

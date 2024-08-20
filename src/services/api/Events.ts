@@ -9,8 +9,7 @@ export async function getEvents(): Promise<IEventInterface[]> {
 }
 
 export async function getEventById(eventId: number): Promise<IEventInterface> {
-  const { data } = await api.get(`${eventId}/:id`)
-  console.log(data);
+  const { data } = await api.get(`event/${eventId}`)
   return data
 }
 

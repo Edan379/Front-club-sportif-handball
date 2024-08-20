@@ -13,30 +13,34 @@ export function NewCard(props: NewCardProps) {
   // recover properties
   const { NewsList } = props;
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   //function redirect to new detail page
-  const handleRedirection=(id:string)=>{
-    console.log("j'ai cliqué sur une actualité avec l'id: ", id);
+  const handleRedirection = (id: string) => {
     navigate(`/actualités/detail/${id}`);
   }
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-8 gap-y-8 gap-x-8'>
-      {NewsList &&[...NewsList].reverse().map((itemNew) => (
+      {NewsList && [...NewsList].reverse().map((itemNew) => (
         <Card
           key={itemNew.id}
-          className='w-full'
-          imgAlt={`image reflétant le titre: ${itemNew.title} de l'actualité`} 
-          imgSrc={itemNew.img?itemNew.img:"/img_actu_defaut.jpg"}
+          className="flex cursor-pointer"
+          imgAlt={`image reflétant le titre: ${itemNew.title} de l'actualité`}
+          imgSrc={itemNew.img ? itemNew.img : "/handball_player.jpg"}
+          onClick={()=>handleRedirection(itemNew.id)}
         >
-          <h5 className='"mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
-            {itemNew.title}
-          </h5>
-          <p>
-            {itemNew.content}
-          </p>
-          <button className='flex w-28 justify-center items-center bg-custom-287581 text-white rounded-md' type='button' onClick={()=>{handleRedirection(itemNew.id)}}>Détails<FontAwesomeIcon className='ml-2' icon={faArrowRight}/></button>
+          <div className="flex-1">
+            <h5 className='text-xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2'>
+              {itemNew.title}
+            </h5>
+            <p className="overflow-hidden text-ellipsis hidden">
+              {itemNew.content}
+            </p>
+          </div>
+          <div className='flex'>
+            <button className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-custom-287581 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button' onClick={() => { handleRedirection(itemNew.id) }}>Détails<FontAwesomeIcon className='ml-2' icon={faArrowRight} /></button>
+          </div>
         </Card>
       ))}
     </div>

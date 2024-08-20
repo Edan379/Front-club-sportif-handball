@@ -1,6 +1,6 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoginModal } from './components/modales/LoginModal/LoginModal';
 import { NavBar } from './components/Navbar/NavBar';
 import { ClubIdentity } from './components/ClubIdentity/ClubIdentity';
@@ -18,16 +18,14 @@ import { PlayersPage } from './pages/Players/PlayersPage';
 import { CalendarPage } from './pages/Calendar/CalendarPage';
 import { AdminPrivateRoute } from './services/utils/AdminPrivateRoute';
 import { BtnDisconect } from './components/BtnDisconnect/BtnDisconect';
+import { validateUserToken } from './services/api/validateUserToken';
 
-interface dataUser {
+export interface dataUser {
   id: string,
   role: string,
   firstname: string,
   lastname: string,
-  email: string,
-  password: string,
   avatar: string,
-  refresToken: string
 }
 
 function App() {
@@ -38,6 +36,25 @@ function App() {
   function handleUserData(data: dataUser): void {
     setUserData({ ...data });
   }
+
+  useEffect(() => {
+    const checkToken = async () => {
+      let token = localStorage.getItem('token');
+      if (token) {
+        try {
+          token ? token = JSON.parse(token) : null;
+          token = `Bearer ${token}`
+
+          //validé le token via l'api
+          const data = await validateUserToken(token);
+          handleUserData(data);
+        } catch (error) {
+          console.error("échec validation", error);
+        }
+      }
+    }
+    checkToken();
+  }, [])
 
   return (
     <>
@@ -53,7 +70,7 @@ function App() {
                 </>
               )
             }
-            {(userData?.role === "ADMIN" || userData?.role === "PLAYER" || userData?.role === "SUPPORTER") ? <BtnDisconect statut='Se déconnecter'/> : null}
+            {(userData?.role === "ADMIN" || userData?.role === "PLAYER" || userData?.role === "SUPPORTER") ? <BtnDisconect statut='Se déconnecter' /> : null}
           </div>
         </div>
         <NavBar userRole={userData ? userData.role : "visiteur"} />

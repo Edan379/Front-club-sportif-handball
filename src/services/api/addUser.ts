@@ -1,5 +1,5 @@
 import { useApi } from "../hooks/useApi";
-import { dataUser } from "../interfaces/dataUser";
+import { dataUser } from "../../App";
 import { ISignupForm } from "../interfaces/SignupForm";
 
 const api = useApi();
