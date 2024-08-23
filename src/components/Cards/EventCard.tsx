@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import CategoryTag from "../CategoryTag/CategoryTag";
 import IEventInterface from "../../services/interfaces/EventInterface";
+import '../Cards/EventCard.css';
 
 interface PropsEventCard {
   eventInfo: IEventInterface
@@ -26,7 +27,7 @@ export default function EventCard(props: PropsEventCard) {
         <a href={`/évènements/detail/${eventInfo.id}`}>
           <img className="rounded-t-lg" src={
             typeof eventInfo.img === 'string'
-              ? eventInfo.img
+              ? "/news_handball_player.jpg"
               : eventInfo.img
                 ? URL.createObjectURL(eventInfo.img)
                 : "/news_handball_player.jpg"
@@ -35,7 +36,7 @@ export default function EventCard(props: PropsEventCard) {
 
         <div className="p-5">
           <a href="#">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{eventInfo.title}</h5>
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2">{eventInfo.title}</h5>
           </a>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 line-clamp-2">{eventInfo.content}</p>
           <div className="flex align-middle justify-between">

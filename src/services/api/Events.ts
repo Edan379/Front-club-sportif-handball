@@ -13,8 +13,8 @@ export async function getEventById(eventId: number): Promise<IEventInterface> {
   return data
 }
 
-export async function postEvents(event: any): Promise<IEventInterface> {
-  const { data } = await api.post('event/create', event)
+export async function postEvents(event: Partial<IEventInterface>): Promise<IEventInterface> {
+  const { data } = await api.post('event/create', event); console.log(data);
   return data
 }
 
