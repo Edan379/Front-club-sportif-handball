@@ -4,42 +4,46 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteEvent } from "../../../services/api/Events";
 
 interface DeleteEventModalProps {
-    updateEventsList(): void;
-    eventId: number
+  deleteItem(event_id: number): void;
+  eventId: number
 }
 
 export default function DeleteEventModal(props: DeleteEventModalProps) {
-    const [openModal, setOpenModal] = useState(false);
-    const {eventId, updateEventsList} = props
+  const [openModal, setOpenModal] = useState(false);
+  const { eventId, deleteItem } = props;
 
-    const deleteEventClick = async (id: number):Promise<void> => {
-        await deleteEvent(id)
-        setOpenModal(false)
-        updateEventsList()
+  const deleteEventClick = async (id: number): Promise<void> => {
+    try {
+      await deleteEvent(id);
+      deleteItem(id);
+      setOpenModal(false)
+    } catch (error) {
+      console.log("error:", error);
     }
+  }
 
-    return (
-        <>
-            <Button color="failure" onClick={() => setOpenModal(true)}>Supprimer</Button>
-            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                            Êtes-vous sûr de vouloir supprimer cet évènement ?
-                        </h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="failure" onClick={() => deleteEventClick(eventId)}>
-                                Oui, supprimer l'évènement
-                            </Button>
-                            <Button color="gray" onClick={() => setOpenModal(false)}>
-                                Non, annuler
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-        </>
-    );
+  return (
+    <>
+      <Button color="failure" onClick={() => setOpenModal(true)}>Supprimer</Button>
+      <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Êtes-vous sûr de vouloir supprimer cet évènement ?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={() => deleteEventClick(eventId)}>
+                Oui, supprimer l'évènement
+              </Button>
+              <Button color="gray" onClick={() => setOpenModal(false)}>
+                Non, annuler
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
 }

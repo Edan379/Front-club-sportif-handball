@@ -41,7 +41,7 @@ export function NewsTab() {
   //extract element quantity to show them in TableBody
   const visibleNewsList: NewData[] | undefined = reversedNewsList?.slice(startIndex, startIndex + newsNbrPerPage);
 
-  //function to add News
+  //function to add an article
   const addArtInNewsList = (newArt: any) => {
     //console.log('newArt: ', newArt)
     setNewsList([
@@ -51,7 +51,7 @@ export function NewsTab() {
     ]);
   }
 
-  //function to edit News
+  //function to edit an article
   const addArtModified = (artModified: NewData) => {
     const index = newsList.findIndex((news) => news.id == artModified.id);
     if (index === 0) {//insert to index 0

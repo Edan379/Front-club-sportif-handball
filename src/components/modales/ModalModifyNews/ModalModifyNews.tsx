@@ -153,7 +153,7 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
               <div>
                 <div>
                   <label htmlFor={"image-update-" + id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                  <img src={selectedNews.img} alt="Selected Image" className="m-auto max-w-200" />
+                  <img src={selectedNews.img?selectedNews.img:'/logoClub.png'} alt="Selected Image" className="m-auto max-w-200" />
                   <input className="border border-gray-300 my-4" type="file" name="img" id={"image-update-" + id} accept="image/*" onChange={handleChange} />
                 </div>
 

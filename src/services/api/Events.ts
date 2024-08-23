@@ -19,12 +19,12 @@ export async function postEvents(event: any): Promise<IEventInterface> {
 }
 
 export async function putEvents(modifiedEvent: IEventInterface): Promise<IEventInterface> {
-  const eventId = modifiedEvent.id
-  const { data } = await api.put(`event/:${eventId}`)
+  const eventId = modifiedEvent.id;
+  const { data } = await api.put(`event/${eventId}`, modifiedEvent);
   return data
 }
 
 export async function deleteEvent(eventId: number): Promise<IEventInterface> {
-  const { data } = await api.delete(`event/:${eventId}`)
+  const { data } = await api.delete(`event/${eventId}`);
   return data
 }

@@ -6,24 +6,24 @@ import IEventInterface from '../../../services/interfaces/EventInterface';
 import { Button, Modal } from 'flowbite-react';
 
 interface ModifyEventModalProps {
-  updateEventsList(): void;
+  addEventModified(eventModified: IEventInterface): void;
   event: IEventInterface
 }
 
 export default function ModifyEventModal(props: ModifyEventModalProps) {
-  const { event, updateEventsList } = props
-  const [openModal, setOpenModal] = useState(false)
-  const [modifiedEvent, setModifiedEvent] = useState<IEventInterface>(event)
+  const { event, addEventModified } = props;
+  const [openModal, setOpenModal] = useState(false);
+  const [modifiedEvent, setModifiedEvent] = useState<IEventInterface>(event);
 
   let modifiedEventSchema = yup.object({
     img: yup.mixed(),
     title: yup.string(),
     date: yup.string(),
-    location: yup.string(),
+    adress: yup.string(),
     start_time: yup.string(),
     end_time: yup.string(),
     type: yup.string(),
-    description: yup.string(),
+    content: yup.string(),
   });
 
   const { handleSubmit, handleChange, values, errors } = useFormik({
@@ -32,11 +32,14 @@ export default function ModifyEventModal(props: ModifyEventModalProps) {
     enableReinitialize: true,
     validationSchema: modifiedEventSchema,
     onSubmit: async values => {
-      await putEvents(values);
-      updateEventsList();
-      setOpenModal(false)
+      try {
+        const data = await putEvents(values);
+        addEventModified(data);
+        setOpenModal(false)
+      } catch (error) {
+        console.log("error: ", error);
+      }
     }
-
   })
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function ModifyEventModal(props: ModifyEventModalProps) {
             {errors.title && <div className="error">{errors.title}</div>}
             <div>
               <label htmlFor="date" className="block mb-2 text-sm font-medium text-gray-900 ">Date de l'évènement</label>
-              <input onChange={handleChange} value={values.date ? values.date : modifiedEvent.date} type="date" name="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="" />
+              <input onChange={handleChange} value={values.start_time ? values.start_time.split('T')[0] : modifiedEvent.start_time} type="date" name="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="" />
             </div>
             {errors.date && <div className="error">{errors.date}</div>}
             <div>
@@ -77,13 +80,13 @@ export default function ModifyEventModal(props: ModifyEventModalProps) {
             <div className='flex gap-4'>
               <div className='flex-1'>
                 <label htmlFor="start_time" className="block mb-2 text-sm font-medium text-gray-900 ">Heure de début</label>
-                <input onChange={handleChange} value={values.start_time ? values.start_time : modifiedEvent.start_time} type="time" name="start_time" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="10h00" />
+                <input onChange={handleChange} value={values.start_time ? values.start_time.split('T')[1].split(':').slice(0, 2).join(':') : modifiedEvent.start_time} type="time" name="start_time" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="10h00" />
                 {errors.start_time && <div className="error">{errors.start_time}</div>}
               </div>
 
               <div className='flex-1'>
                 <label htmlFor="end_time" className="block mb-2 text-sm font-medium text-gray-900 ">Heure de fin</label>
-                <input onChange={handleChange} value={values.end_time ? values.end_time : modifiedEvent.end_time} type="time" name="end_time" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12h00" />
+                <input onChange={handleChange} value={values.end_time ? values.end_time.split('T')[1].split(':').slice(0, 2).join(':') : modifiedEvent.end_time} type="time" name="end_time" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="12h00" />
                 {errors.end_time && <div className="error">{errors.end_time}</div>}
               </div>
             </div>
@@ -92,9 +95,9 @@ export default function ModifyEventModal(props: ModifyEventModalProps) {
               <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 ">Type d'évènement</label>
               <select defaultValue={values.type ? values.type : modifiedEvent.type} onChange={handleChange} name="type" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="Choose" disabled>Selectionnez un type d'évènement</option>
-                <option value="Match">Match</option>
-                <option value="Entraînement">Entraînement</option>
-                <option value="Apéro">Apéro</option>
+                <option value="MATCH">Match</option>
+                <option value="ENTRAINEMENT">Entraînement</option>
+                <option value="APERO">Apéro</option>
               </select>
             </div>
             {errors.type && <div className="error">{errors.type}</div>}

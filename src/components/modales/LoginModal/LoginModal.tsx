@@ -68,7 +68,6 @@ export function LoginModal(props: LoginModalProps) {
           localStorage.setItem("token", JSON.stringify(token));
           //stockage user refreshToken in localstorage
           localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
-          console.log(user)
 
           //redifine UserDataFromServer
           handleUserData(user);
