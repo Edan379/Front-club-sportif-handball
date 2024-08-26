@@ -31,7 +31,7 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
     content: yup.string().min(20, "Veuillez inscrire au minimum 20 caractères !").required("La description est requise !"),
   })
 
-  const { handleChange, handleSubmit, values, errors, resetForm } = useFormik({
+  const { handleChange, handleSubmit, values, errors, resetForm, setFieldValue } = useFormik({
     initialValues: {
       img: "",
       title: "",
@@ -83,7 +83,7 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
 
       <SuccessModal />
 
-      <div id="crud-modal" tab-index="-1" aria-hidden="true" className={formShow + " overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"}>
+      <div id="crud-modal" tab-index="-1" aria-hidden={formShow === "hidden"} className={formShow + " overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"}>
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
 
@@ -103,8 +103,8 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
             <form className="p-4 md:p-5" onSubmit={handleSubmit}>
               <div className="grid gap-4 mb-4 grid-cols-2">
                 <div className="col-span-2">
-                  <input className="border border-gray-300" type="file" name="img" id="img" accept="image/*" onChange={handleChange} value={values.img} />
-                  {errors.img && <small className="error">{errors.img}</small>}
+                  <input className="border border-gray-300" type="file" name="img" id="img" accept="image/*" onChange={(event) => { setFieldValue("img", event.currentTarget.files ? event.currentTarget.files[0] : "") }} />
+                  {errors.img && values.img && <small className="error">{errors.img}</small>}
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titre</label>

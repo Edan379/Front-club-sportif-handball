@@ -26,9 +26,14 @@ export function NewCard(props: NewCardProps) {
         <Card
           key={itemNew.id}
           className="flex cursor-pointer"
-          imgAlt={`image reflétant le titre: ${itemNew.title} de l'actualité`}
-          imgSrc={itemNew.img ? itemNew.img : "/handball_player.jpg"}
-          onClick={()=>handleRedirection(itemNew.id)}
+          renderImage={() => (
+            <img
+              src={itemNew.img ? `data:image/png;base64,${itemNew.img}` : "/handball_player.jpg"}
+              alt={`image reflétant le titre: ${itemNew.title} de l'actualité`}
+              className="w-full h-[321px] object-cover"
+            />
+          )}
+          onClick={() => handleRedirection(itemNew.id)}
         >
           <div className="flex-1">
             <h5 className='text-xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2'>

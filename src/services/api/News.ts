@@ -14,7 +14,7 @@ export async function getNewsList(): Promise<NewData[]> {
 }
 
 export async function createNews(art: any) {
-  const { data } = await api.post("news/create", art);
+  const { data } = await api.post("news/create", art,{headers:{"Content-Type":"multipart/form-data"}});
   return data;
 }
 

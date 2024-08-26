@@ -37,7 +37,7 @@ export function NewDetailsPage() {
       <h2 className="text-left text-2xl mb-4 font-bold">
         {newDetail?.title}
       </h2>
-      <img className="rounded" src={newDetail && newDetail.img ? newDetail.img : "/handball_player.jpg"} alt="Il s'agit d'une illustration de l'actualité" />
+      <img className="rounded" src={newDetail && newDetail.img ? `data:image/png;base64,${newDetail.img}` : "/handball_player.jpg"} alt="Il s'agit d'une illustration de l'actualité" />
       <time className="text-right mt-2">{newDetail?.created_at.split("T")[0].split("-").reverse().join("-")}</time>
       <p className="mt-2">{newDetail?.content}</p>
     </div>
