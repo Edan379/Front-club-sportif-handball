@@ -45,7 +45,7 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
   }
   // Use Pick to create type with proprietie will
   type PartialNewData = Pick<NewData, 'id' | 'img' | 'title' | 'content'>;
-  
+
   const [selectedNews, setSelectedNews] = useState<PartialNewData>({
     id: "",
     img: "",
@@ -53,13 +53,18 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
     content: "",
   });
 
+  const imageSrc = typeof selectedNews.img === 'string'
+    ? `data:image/png;base64,${selectedNews.img}`
+    : selectedNews.img ? URL.createObjectURL(selectedNews.img as File)
+      : '/logoClub.png';
+
   const handleShowDataInForm: MouseEventHandler<HTMLButtonElement> = (e) => {
     handleOpenModal();
     if (e.target instanceof HTMLElement) {
       //update selectedNews retrieving news infos via DOM 
       setSelectedNews({
         ...selectedNews,
-        id: e.target.parentElement?.parentElement?.parentElement?.id || "",//use oprerator null  to assign a empty chain if value is undefined
+        id: id,//use oprerator to assign a empty chain if value is undefined
         title: e.target.parentElement?.parentElement?.parentElement?.children[0]?.textContent || "",
         img: e.target.parentElement?.parentElement?.parentElement?.children[2]?.textContent || "",
         content: e.target.parentElement?.parentElement?.parentElement?.children[1]?.textContent || "",
@@ -74,12 +79,12 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
     content: yup.string().min(20, "Veuillez inscrire au minimum 20 caractères !").required("La description est requise !"),
   })
 
-  const { handleChange, handleSubmit, values, errors, resetForm } = useFormik({
+  const { handleChange, handleSubmit, values, errors, resetForm, setFieldValue } = useFormik({
     initialValues: {
-      id: "",
+      id: id,
       img: "",
-      title: "",
-      content: "",
+      title: selectedNews.title,
+      content: selectedNews.content
     },
 
     // validation form with validationSchema of yup
@@ -87,16 +92,12 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
 
     //submit if form is validate by validationSchema of yup
     onSubmit: async values => {
-      //console.log("les données sont validées, les voici:", values);
 
-      setSelectedNews(values); 
-      //console.log("values à envoyer au serveur:", values);
+      setSelectedNews(values);
 
       //do request to server
-      const response = await modifyNews(values);
-      console.log("response serveur: ", response);
-      
-      if (response.data) {
+      const data = await modifyNews(values);
+      if (data) {
         //close modal
         handleClosureModal();
 
@@ -110,7 +111,8 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
         }
 
         // update news table with news modified
-        addArtModified(response.data);
+        addArtModified(data);
+        resetForm()
       }
       else {
         //show failure modal
@@ -134,7 +136,7 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
       </button>
 
       <SuccessModal />
-      <div id="update-modal" tab-index="-1" aria-hidden="true" className={state + " overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"}>
+      <div id="update-modal" tab-index="-1" className={state + " overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"}>
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -153,8 +155,8 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
               <div>
                 <div>
                   <label htmlFor={"image-update-" + id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                  <img src={selectedNews.img?selectedNews.img:'/logoClub.png'} alt="Selected Image" className="m-auto max-w-200" />
-                  <input className="border border-gray-300 my-4" type="file" name="img" id={"image-update-" + id} accept="image/*" onChange={handleChange} />
+                  <img src={imageSrc}/* {selectedNews.img ? `data:image/png;base64,${selectedNews.img}` : '/logoClub.png'} */ alt="Selected Image" className="m-auto max-w-200" />
+                  <input className="border border-gray-300 my-4" type="file" name="img" id={"image-update-" + id} accept="image/*" onChange={(event) => { setFieldValue("img", event.currentTarget.files ? event.currentTarget.files[0] : null); }} />
                 </div>
 
                 <div>

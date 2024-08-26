@@ -13,8 +13,8 @@ export async function getNewsList(): Promise<NewData[]> {
   return data
 }
 
-export async function createNews(art: any) {
-  const { data } = await api.post("news/create", art,{headers:{"Content-Type":"multipart/form-data"}});
+export async function createNews(art: any) { console.log(art)
+  const { data } = await api.post("news/create", art, { headers: { "Content-Type": "multipart/form-data" } });
   return data;
 }
 
@@ -24,10 +24,9 @@ export async function deleteNews(news_id: number) {
   return response;
 }
 
-export async function modifyNews(data: PartialNewData) {
-  //console.log('data:', data);
-  const response = await api.put(`news/update/id/${data.id}`, data);
-  return response;
+export async function modifyNews(artEdited: PartialNewData) {
+  const {data} = await api.put(`news/update/id/${artEdited.id}`, artEdited, { headers: { "Content-Type": "multipart/form-data" } });
+  return data;
 }
 
 export async function getNewDetail(idNew: string) {
