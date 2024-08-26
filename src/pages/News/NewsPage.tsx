@@ -1,4 +1,4 @@
-import { NewCard } from "../../components/NewCard/NewCard";
+import { NewCard } from "../../components/Cards/NewCard";
 import { useEffect, useState } from "react";
 import { NewData } from "../../services/interfaces/NewData";
 import { getNewsList } from "../../services/api/News";
