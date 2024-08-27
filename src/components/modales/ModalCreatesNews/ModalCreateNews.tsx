@@ -26,14 +26,19 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
 
   const FILE_SIZE = 5 * 1024 * 1024;   // 5 Mo en octets
   const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']; // MIME autorisés
-
+  const MAX_FILENAME_LENGTH = 50;
+  
   //secure form with yup
   let validationSchema = yup.object({
-    img:yup.mixed<File>().test('fileSize', 'Le fichier est trop volumineux (max 5Mo)', value => {
-      return value && value.size <= FILE_SIZE;
-    })
+    img: yup.mixed<File>()
+      .test('fileSize', 'Le fichier est trop volumineux (max 5Mo)', value => {
+        return value && value.size <= FILE_SIZE;
+      })
       .test('fileType', 'Format de fichier non supporté. Seuls les fichiers .png, .jpeg, .jpg, .webp sont autorisés', value => {
         return value && SUPPORTED_FORMATS.includes(value.type);
+      })
+      .test('fileNameLength', `Le nom du fichier ne doit pas dépasser ${MAX_FILENAME_LENGTH} caractères`, value => {
+        return value && value.name.length <= MAX_FILENAME_LENGTH;
       }),
     title: yup.string().max(30, "Veuillez inscrire 30 caractères maximum !").required("Le titre est requis !"),
     content: yup.string().min(20, "Veuillez inscrire au minimum 20 caractères !").required("La description est requise !"),
