@@ -27,17 +27,21 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
   const FILE_SIZE = 5 * 1024 * 1024;   // 5 Mo en octets
   const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']; // MIME autorisés
   const MAX_FILENAME_LENGTH = 50;
-  
+
   //secure form with yup
   let validationSchema = yup.object({
     img: yup.mixed<File>()
+      .notRequired()
       .test('fileSize', 'Le fichier est trop volumineux (max 5Mo)', value => {
+        if (!value) return true;
         return value && value.size <= FILE_SIZE;
       })
       .test('fileType', 'Format de fichier non supporté. Seuls les fichiers .png, .jpeg, .jpg, .webp sont autorisés', value => {
+        if (!value) return true;
         return value && SUPPORTED_FORMATS.includes(value.type);
       })
       .test('fileNameLength', `Le nom du fichier ne doit pas dépasser ${MAX_FILENAME_LENGTH} caractères`, value => {
+        if (!value) return true;
         return value && value.name.length <= MAX_FILENAME_LENGTH;
       }),
     title: yup.string().max(30, "Veuillez inscrire 30 caractères maximum !").required("Le titre est requis !"),
@@ -76,13 +80,14 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
         addArtInNewsList(artCreated);
         resetForm();
 
-        //else rsponse not ok
-        /*show modal to indicate failure
-          resetForm();
-          handleFormShow()
-        */
       } catch (error) {
-        console.log(error);
+        console.error("Erreur lors de la création d'actualité", error);
+        
+        resetForm();
+        handleFormShow()
+        
+        //show modal to indicate failure
+
       }
     },
   });
@@ -132,7 +137,7 @@ export function ModalCreateNews(props: ModalCreateNewsProps) {
               </div>
 
               <div className="flex justify-end">
-                <button type="button" className="bg-red-800 text-white rounded-md p-2 mr-4" /* data-modal-toggle="crud-modal" */ onClick={() => { resetForm(), handleFormHidden() }}>
+                <button type="button" className="bg-red-800 text-white rounded-md p-2 mr-4" onClick={() => { resetForm(), handleFormHidden() }}>
                   Annuler
                 </button>
 

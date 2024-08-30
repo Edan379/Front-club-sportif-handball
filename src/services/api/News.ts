@@ -25,7 +25,7 @@ export async function deleteNews(news_id: number) {
 }
 
 export async function modifyNews(artEdited: PartialNewData) {
-  const { data } = await api.put(`news/update/id/${artEdited.id}`, artEdited, { headers: { "Content-Type": "multipart/form-data" } });
+  const { data } = await api.put(`news/update/id/${artEdited.id}`, artEdited, { headers: { "Content-Type": "multipart/form-data" } });  
   return data;
 }
 

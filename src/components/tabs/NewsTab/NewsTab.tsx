@@ -127,7 +127,7 @@ export function NewsTab() {
 
                 <TableCell>
                   <div className="flex justify-between">
-                    <ModalModifyNews addArtModified={addArtModified} id={art.id} />
+                    <ModalModifyNews addArtModified={addArtModified} id={art.id} art={art} />
 
                     <DeleteNewsModal news_id={art.id} deleteArt={deleteArt} />
                   </div>

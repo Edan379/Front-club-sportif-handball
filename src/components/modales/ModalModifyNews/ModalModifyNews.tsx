@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import * as yup from 'yup';
-import { useState, MouseEventHandler, useEffect } from "react";
+import { useState } from "react";
 import { SuccessModal } from "../SuccessModal/SuccessModal";
 import { NewData } from "../../../services/interfaces/NewData";
 import { modifyNews } from "../../../services/api/News";
@@ -13,11 +13,12 @@ interface EditModeProps {
 interface ModalModifyNewsProps {
   addArtModified: (artModified: NewData) => void;
   id: string;
+  art: NewData
 }
 
 export function ModalModifyNews(props: ModalModifyNewsProps) {
 
-  const { addArtModified, id } = props;
+  const { addArtModified, id, art } = props;
 
   //define a editMode to actived field
   const [editMode, setEditMode] = useState<EditModeProps>({
@@ -47,30 +48,16 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
   type PartialNewData = Pick<NewData, 'id' | 'img' | 'title' | 'content'>;
 
   const [selectedNews, setSelectedNews] = useState<PartialNewData>({
-    id: "",
-    img: "",
-    title: "",
-    content: "",
+    id: art.id,
+    img: art.img,
+    title: art.title,
+    content: art.content,
   });
 
   const imageSrc = typeof selectedNews.img === 'string'
     ? `data:image/png;base64,${selectedNews.img}`
     : selectedNews.img ? URL.createObjectURL(selectedNews.img as File)
       : '/logoClub.png';
-
-  const handleShowDataInForm: MouseEventHandler<HTMLButtonElement> = (e) => {
-    handleOpenModal();
-    if (e.target instanceof HTMLElement) {
-      //update selectedNews retrieving news infos via DOM 
-      setSelectedNews({
-        ...selectedNews,
-        id: id,//use oprerator to assign a empty chain if value is undefined
-        title: e.target.parentElement?.parentElement?.parentElement?.children[0]?.textContent || "",
-        img: e.target.parentElement?.parentElement?.parentElement?.children[2]?.textContent || "",
-        content: e.target.parentElement?.parentElement?.parentElement?.children[1]?.textContent || "",
-      });
-    }
-  }
 
   const FILE_SIZE = 5 * 1024 * 1024;   // 5 Mo en octets
   const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']; // MIME autorisés
@@ -79,14 +66,18 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
   //secure form with yup
   let validationSchema = yup.object({
     img: yup.mixed<File>()
+      .notRequired()
       .test('fileSize', 'Le fichier est trop volumineux (max 5Mo)', value => {
+        if (!value) return true;
         return value && value.size <= FILE_SIZE;
       })
       .test('fileType', 'Format de fichier non supporté. Seuls les fichiers .png, .jpeg, .jpg, .webp sont autorisés', value => {
+        if (!value) return true;
         return value && SUPPORTED_FORMATS.includes(value.type);
       })
       .test('fileNameLength', `Le nom du fichier ne doit pas dépasser ${MAX_FILENAME_LENGTH} caractères`, value => {
-        return value && value.name.length <= MAX_FILENAME_LENGTH;
+        if (!value) return true;
+        return value.name.length <= MAX_FILENAME_LENGTH;
       }),
     title: yup.string().max(30, "Veuillez inscrire 30 caractères maximum !").required("Le titre est requis !"),
     content: yup.string().min(20, "Veuillez inscrire au minimum 20 caractères !").required("La description est requise !"),
@@ -94,7 +85,7 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
 
   const { handleChange, handleSubmit, values, errors, resetForm, setFieldValue } = useFormik({
     initialValues: {
-      id: id,
+      id: selectedNews.id,
       img: "",
       title: selectedNews.title,
       content: selectedNews.content
@@ -105,7 +96,6 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
 
     //submit if form is validate by validationSchema of yup
     onSubmit: async values => {
-
       setSelectedNews(values);
 
       //do request to server
@@ -125,26 +115,19 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
 
         // update news table with news modified
         addArtModified(data);
-        resetForm()
       }
       else {
         //show failure modal
+
         resetForm()
         handleClosureModal();
       }
     }
   })
 
-  useEffect(() => {
-    values.id = selectedNews.id,
-      values.img = selectedNews.img,
-      values.title = selectedNews.title,
-      values.content = selectedNews.content
-  }, [selectedNews])
-
   return (
     <>
-      <button data-modal-target="update-modal" data-modal-toggle="update-modal" className="block text-white bg-custom-287581 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="button" onClick={handleShowDataInForm}>
+      <button data-modal-target="update-modal" data-modal-toggle="update-modal" className="block text-white bg-custom-287581 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="button" /* onClick={handleShowDataInForm} */ onClick={handleOpenModal}>
         Modifier
       </button>
 
@@ -168,25 +151,25 @@ export function ModalModifyNews(props: ModalModifyNewsProps) {
               <div>
                 <div>
                   <label htmlFor={"image-update-" + id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                  <img src={imageSrc}/* {selectedNews.img ? `data:image/png;base64,${selectedNews.img}` : '/logoClub.png'} */ alt="Selected Image" className="m-auto max-w-200" />
+                  <img src={imageSrc} alt="Selected Image" className="m-auto max-w-200" />
                   <input className="border border-gray-300 my-4" type="file" name="img" id={"image-update-" + id} accept="image/*" onChange={(event) => { setFieldValue("img", event.currentTarget.files ? event.currentTarget.files[0] : null); }} />
                 </div>
 
                 <div>
                   <label htmlFor={"title-update-" + id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titre</label>
-                  <input readOnly={editMode.title} type="text" name="title" id={"title-update-" + id} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value={values.title ? values.title : selectedNews.title} onClick={() => { handleClick("title") }} onChange={handleChange} />
+                  <input readOnly={editMode.title} type="text" name="title" id={"title-update-" + id} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value={values.title} onClick={() => { handleClick("title") }} onChange={handleChange} />
                   {errors.title && values.title !== "" && <small className="error">{errors.title}</small>}
                 </div>
 
                 <div className="mb-4">
                   <label htmlFor={"description-update-" + id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                  <textarea readOnly={editMode.content} id={"description-update-" + id} name="content" rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={values.content ? values.content : selectedNews.content} onClick={() => { handleClick("content") }} onChange={handleChange}></textarea>
+                  <textarea readOnly={editMode.content} id={"description-update-" + id} name="content" rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={values.content} onClick={() => { handleClick("content") }} onChange={handleChange}></textarea>
                   {errors.content && values.content !== "" && <small className="error">{errors.content}</small>}
                 </div>
               </div>
 
               <div className="flex justify-end">
-                <button type="button" className="bg-red-800 text-white rounded-md p-2 mr-4" /* data-modal-toggle="update-modal" */ onClick={() => { resetForm(), handleClosureModal() }}>
+                <button type="button" className="bg-red-800 text-white rounded-md p-2 mr-4" onClick={() => { resetForm(), handleClosureModal() }}>
                   Annuler
                 </button>
 
