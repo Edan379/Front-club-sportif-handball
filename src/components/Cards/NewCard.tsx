@@ -16,8 +16,8 @@ export function NewCard(props: NewCardProps) {
   const navigate = useNavigate();
 
   //function redirect to new detail page
-  const handleRedirection = (id: string) => {
-    navigate(`/actualités/detail/${id}`);
+  const handleRedirection = (dataNew: NewData) => {
+    navigate(`/actualités/detail/${dataNew.id}`, { state: { itemNews: dataNew } });
   }
 
   return (
@@ -33,7 +33,7 @@ export function NewCard(props: NewCardProps) {
               className="w-full h-[321px] object-cover"
             />
           )}
-          onClick={() => handleRedirection(itemNew.id)}
+          onClick={() => handleRedirection(itemNew)}
         >
           <div className="flex-1">
             <h5 className='text-xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2'>
@@ -44,7 +44,7 @@ export function NewCard(props: NewCardProps) {
             </p>
           </div>
           <div className='flex'>
-            <button className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-custom-287581 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button' onClick={() => { handleRedirection(itemNew.id) }}>Détails<FontAwesomeIcon className='ml-2' icon={faArrowRight} /></button>
+            <button className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-custom-287581 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button' onClick={() => { handleRedirection(itemNew) }}>Détails<FontAwesomeIcon className='ml-2' icon={faArrowRight} /></button>
           </div>
         </Card>
       ))}

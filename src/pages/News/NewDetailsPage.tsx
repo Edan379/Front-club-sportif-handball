@@ -1,6 +1,5 @@
-import { useParams } from "react-router-dom"
-import { getNewDetail } from "../../services/api/News";
-import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom"
+import { useState } from "react";
 
 interface newDetail {
   id: string;
@@ -13,24 +12,11 @@ interface newDetail {
 }
 
 export function NewDetailsPage() {
-  const { idNew } = useParams();
+  const location = useLocation();
 
-  const [newDetail, setNewDetail] = useState<newDetail>();
+  const { itemNews } = location.state || {};
 
-  useEffect(() => {
-    if (idNew) {
-      const requestApi = async () => {
-        try {
-          const response = await getNewDetail(idNew);
-          setNewDetail(response.data);
-        }
-        catch (error) {
-          console.log("La requête a échoué");
-        }
-      }
-      requestApi();
-    }
-  }, [])
+  const [newDetail, _setNewDetail] = useState<newDetail>(itemNews);
 
   return (
     <div className="flex flex-col my-10 w-1/2 p-0 mx-auto">
