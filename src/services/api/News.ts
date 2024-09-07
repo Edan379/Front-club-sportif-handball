@@ -20,7 +20,7 @@ export async function createNews(art: any) {
 
 export async function deleteNews(news_id: number) {
   //console.log('news_id: ', news_id);
-  const response = await api.delete(`news/delete/${news_id}`);
+  const response = await api.delete(`news/delete/${news_id}`);  
   return response;
 }
 

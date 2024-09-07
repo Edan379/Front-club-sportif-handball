@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 export function useApi() {
 
-  const headers = {'Content-Type': 'application/json','Accept': 'application/json'};
+  const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
 
   const api: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_DEV,
@@ -52,7 +52,7 @@ export function useApi() {
 
             // Réessayer la requête initiale
             return api(originalRequest);
-          } 
+          }
           catch (refreshError) {
             // Gérer les erreurs de rafraîchissement de token (ex. rediriger vers la page de connexion)
             console.error('Refresh token failed:', refreshError);
